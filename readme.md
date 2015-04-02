@@ -92,7 +92,7 @@ The action taken on the representation will be contextual to the media type
 being worked on and its current state. Here's an example of how HTTP verbs
 map to create, read, update, delete operations in a particular context:
 
-| HTTP METHOD     | `POST`          | `GET`     | `PUT`       | `DELETE` |
+| HTTP Method     | `POST`          | `GET`     | `PUT`       | `DELETE` |
 | --------------- | --------------- | --------- | ----------- | -------- |
 | CRUD equivalent | CREATE          | READ      | UPDATE      | DELETE |
 | `/dogs`           | Create new dogs | List dogs | Bulk update | Delete all dogs |
@@ -112,7 +112,7 @@ properties of the members of the response set
 
 No values in keys:
 
-```
+```json
 "tags": [
     {"id": "125", "name": "Environment"},
     {"id": "834", "name": "Water Quality"}
@@ -123,7 +123,7 @@ No values in keys:
 
 Values in keys:
 
-```
+```json
 "tags": [
     {"125": "Environment"},
     {"834": "Water Quality"}
@@ -137,7 +137,7 @@ developer, message for the end-user (when appropriate), internal error code
 (corresponding to some specific internally determined ID), links where
 developers can find more info. For example:
 
-```
+```json
 {
     "status" : 400,
     "developerMessage" : "Verbose, plain language description of the problem. Provide developers suggestions about how to solve their problems here",
@@ -175,7 +175,7 @@ where:
 
 Information about record limits and total available count should also be included in the response. Example:
 
-```
+```json
 {
     "metadata": {
         "resultset": {
