@@ -92,11 +92,11 @@ The action taken on the representation will be contextual to the media type
 being worked on and its current state. Here's an example of how HTTP verbs
 map to create, read, update, delete operations in a particular context:
 
-| HTTP METHOD     | POST            | GET       | PUT         | DELETE |
-| --------------- | --------------- | --------- | ----------- | ------ |
+| HTTP METHOD     | `POST`          | `GET`     | `PUT`       | `DELETE` |
+| --------------- | --------------- | --------- | ----------- | -------- |
 | CRUD equivalent | CREATE          | READ      | UPDATE      | DELETE |
-| /dogs           | Create new dogs | List dogs | Bulk update | Delete all dogs |
-| /dogs/1234      | Error           | Show Bo   | If exists, update Bo; If not, error | Delete Bo |
+| `/dogs`           | Create new dogs | List dogs | Bulk update | Delete all dogs |
+| `/dogs/1234`      | Error           | Show Bo   | If exists, update Bo; If not, error | Delete Bo |
 
 (Example from Web API Design, by Brian Mulloy, Apigee.)
 
@@ -113,10 +113,10 @@ properties of the members of the response set
 No values in keys:
 
 ```
-    "tags": [
-      {"id": "125", "name": "Environment"},
-      {"id": "834", "name": "Water Quality"}
-    ]
+"tags": [
+    {"id": "125", "name": "Environment"},
+    {"id": "834", "name": "Water Quality"}
+]
 ```
 
 ### Bad examples
@@ -124,10 +124,10 @@ No values in keys:
 Values in keys:
 
 ```
-    "tags": [
-      {"125": "Environment"},
-      {"834": "Water Quality"}
-    ],
+"tags": [
+    {"125": "Environment"},
+    {"834": "Water Quality"}
+],
 ```
 
 ## Error handling
@@ -138,23 +138,21 @@ developer, message for the end-user (when appropriate), internal error code
 developers can find more info. For example:
 
 ```
-    {
-      "status" : 400,
-      "developerMessage" : "Verbose, plain language description of the problem. Provide developers
-       suggestions about how to solve their problems here",
-      "userMessage" : "This is a message that can be passed along to end-users, if needed.",
-      "errorCode" : "444444",
-      "moreInfo" : "http://www.example.com/developer/path/to/help/for/444444,
-       http://drupal.org/node/444444",
-    }
+{
+    "status" : 400,
+    "developerMessage" : "Verbose, plain language description of the problem. Provide developers suggestions about how to solve their problems here",
+    "userMessage" : "This is a message that can be passed along to end-users, if needed.",
+    "errorCode" : "444444",
+    "moreInfo" : "http://www.example.com/developer/path/to/help/for/444444, http://drupal.org/node/444444",
+}
 ```
 
 Use three simple, common response codes indicating success, failure due to
 client-side problem, or failure due to server-side problem (respectively):
 
-- 200 OK
-- 400 Bad Request
-- 500 Internal Server Error
+- `200 OK`
+- `400 Bad Request`
+- `500 Internal Server Error`
 
 
 ## Versions
@@ -162,8 +160,8 @@ client-side problem, or failure due to server-side problem (respectively):
 - Never release an API without a version number.
 - Versions should be integers, not decimal numbers, prefixed with `v`. For
 example:
-    - Good: v1, v2, v3
-    - Bad: v-1.1, v1.2, 1.3
+    - Good: `v1`, `v2`, `v3`
+    - Bad: `v-1.1`, `v1.2`, `1.3`
 - Maintain APIs at least one version back.
 
 
@@ -178,16 +176,16 @@ where:
 Information about record limits and total available count should also be included in the response. Example:
 
 ```
-    {
-        "metadata": {
-            "resultset": {
-                "count": 227,
-                "offset": 25,
-                "limit": 25
-            }
-        },
-        "results": []
-    }
+{
+    "metadata": {
+        "resultset": {
+            "count": 227,
+            "offset": 25,
+            "limit": 25
+        }
+    },
+    "results": []
+}
 ```
 
 ## Mock Responses
