@@ -46,8 +46,8 @@ accept any requests that do not specify a version number.
 - Use HTTP verbs (`GET`, `POST`, `PUT`, `DELETE`, etc.) to operate on the
 collections and elements.
 - You shouldn’t need to go deeper than `resource/identifier/resource`.
-- Put the version number at the base of your URL, for example
-`http://example.com/v1/path/to/resource`.
+- Put the version number immediately after the base api name in your URL, for example
+`http://example.com/api/v1/path/to/resource`.
 - URL v. header:
     - If it changes the logic you write to handle the response, put it in the
     URL.
