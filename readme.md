@@ -43,7 +43,7 @@ accept any requests that do not specify a version number.
 ### General guidelines for RESTful URLs
 - A URL identifies a resource.
 - URLs should include nouns, not verbs.
-- Use plural nouns only for consistency (no singular nouns).
+- Use plural nouns only, for consistency (no singular nouns).
 - Use HTTP verbs (`GET`, `POST`, `PUT`, `DELETE`, etc.) to operate on the
 collections and elements.
 - You shouldn’t need to go deeper than `resource/identifier/resource`.
