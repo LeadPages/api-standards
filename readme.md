@@ -9,6 +9,7 @@ information.
 ## Contents
 
 - [Guidelines](#guidelines)
+- [Base URL](#base-url)
 - [Pragmatic REST](#pragmatic-rest)
 - [RESTful URLs](#restful-urls)
 - [HTTP Verbs](#http-verbs)
@@ -27,6 +28,59 @@ This document provides guidelines and examples for LeadPages HTTP APIs,
 encouraging consistency, maintainability, and best practices across
 applications. LeadPages APIs aim to balance a truly RESTful API interface with
 a positive developer experience (DX).
+
+## Base URL
+
+The base URL of an API resource reflects a few key considerations. Examples of
+well-formed base URLs:
+
+- `https://api.company.com/data/v1`
+- `https://product.company.com/api/v1`
+- `https://company.com/api/v1`
+
+For clarification, here are the base URLs in the context of a full
+resource URL:
+
+- `https://api.company.com/data/v1/widgets/1`
+- `https://product.company.com/api/v1/widgets/1`
+- `https://company.com/api/v1/widgets/1`
+
+The first example base URL is the primary case. The key considerations to
+note in that first URL:
+
+- The protocol (`https`) is specified in the base URL. This is purposeful.
+SSL is a minimum requirement and specifying a base URL beginning with `http`
+is invalid. There are [lots](http://googleonlinesecurity.blogspot.com/2014/08/https-as-ranking-signal_6.html)
+of [resources](http://stackoverflow.com/questions/548029/how-much-overhead-does-ssl-impose)
+and [discussions](http://code.flickr.net/2014/04/30/flickr-api-going-ssl-only-on-june-27th-2014/)
+about [why](https://blog.cloudflare.com/how-cloudflare-is-making-ssl-fast/)
+SSL only is a good choice and why others choose that path, and addressing
+concerns about speed and overhead.
+- A version (`v1`) is specified in the URL. Further information about
+versioning is available later in this document, but in short, API versioning
+helps ease transitions when there are breaking changes to the interface put
+forward by an API, and makes for smoother and more straightforward deprecation
+plans. If an API update will break clients and implementations, at a minimum,
+we want to know how many will be affected, and a versioned API is the place to
+start for finding that information.
+- The API is named `data`. You could call this the "Data API" based on the
+fragment in the URL. You could also have API names like "administration" or
+"tasks." The goal of having an API name in the path is to provide a sensible
+grouping of top-level objects. In an Admin API, you might have top-level
+objects like "users" that would not make sense if placed next to "tasks" in a
+Tasks API. In the full resource URL example above, the top-level objects are
+`widgets`.
+- The API in this example is hosted on a subdomain dedicated to a set of APIs.
+This distinction is important, because it necessitates the API name.
+  - If there are multiple APIs, and they make sense grouped under the company
+  as an entity, having several named APIs is a logical grouping.
+  - If the subdomain is a specific product, service, or similar, and there are
+  very few of them, the second example may make more sense. In this case, the
+  API name is replaced with the `api` fragment to indicate that this is the
+  sole, self-contained API for this item. This API should be comprehensive and
+  should not overlap functionality with other APIs located on other subdomains.
+  - If the company, product, and API can be considered a singular unit, the
+  third example, with no subdomain, is sensible.
 
 ## Pragmatic REST
 
