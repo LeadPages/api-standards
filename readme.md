@@ -229,3 +229,11 @@ This document borrows heavily from:
 - [API Facade Pattern](http://apigee.com/about/resources/ebooks/api-fa%C3%A7ade-pattern) by **Brian Mulloy** Apigee
 - [Web API Design](http://pages.apigee.com/web-api-design-ebook.html) by **Brian Mulloy**, Apigee
 - [Designing HTTP Interfaces and RESTful Web Services](https://www.youtube.com/watch?v=zEyg0TnieLg)
+
+Additionally, this document has been created and improved thanks to the
+following people:
+
+- [bendemaree](https://github.com/bendemaree)
+- [brechin](https://github.com/brechin)
+- [kristenwomack](https://github.com/kristenwomack)
+- [rskm1](https://github.com/rskm1)
