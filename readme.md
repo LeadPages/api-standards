@@ -8,7 +8,7 @@ information.
 
 ## Contents
 
-- [Guidelines](#guidelines)
+- [Overview](#overview)
 - [Base URL](#base-url)
 - [Pragmatic REST](#pragmatic-rest)
 - [RESTful URLs](#restful-urls)
@@ -22,12 +22,57 @@ information.
 - [Contributing](#contributing)
 - [Credits](#credits)
 
-## Guidelines
+## Overview
 
+LeadPages APIs embrace several core ideas that guide how our APIs present
+themselves. The aim of this document is to document those ideas, whether it be
+through concrete examples or prose. The rest of the overview provides some
+detail on what those core ideas are.
+
+### APIs Are User Experiences
+We place an emphasis on developer experience, both for others and ourselves.
+We are our own API consumers, and we must be efficient and concerted in both
+our creation and use of APIs.
+
+### APIs Are Designed
+An API presents itself as the best representation of something. It is
+structured, thought-out, canonical, and has semantic importance. An API could
+be [considered a contract](http://apievangelist.com/2014/07/15/an-api-definition-as-the-truth-in-the-api-contract/),
+or putting your best foot forward. These are justifications for utilizing a
+design process. This document helps in the design process by guiding the process
+of deciding "what goes where and why" and moving the "why" out of the core
+development process. This helps keep the API design process measured and
+repeatable.
+
+### APIs Are Opinionated
 This document provides guidelines and examples for LeadPages HTTP APIs,
 encouraging consistency, maintainability, and best practices across
-applications. LeadPages APIs aim to balance a truly RESTful API interface with
-a positive developer experience (DX).
+applications. Best practices may come with scenarios that pit The Right Way™
+against the pragmatic way. LeadPages APIs aim to balance the rigor and
+structure of a REST API with a positive developer experience. We'll always go
+for the best solution when it's practical to do so.
+
+### APIs Are Interfaces
+
+It's in the name. APIs are a developer's user interface to a service. When
+tough questions arise about the design of the API, we can defer to experts.
+Jakob Nielsen's "Usability Heuristics for User Interface Design" have provided
+designers with research-based common ground and apply well to developers using
+an API.
+
+Reading [the heuristics themselves](http://www.nngroup.com/articles/ten-usability-heuristics/)
+is the ideal starting point, but they are summarized here.
+
+- Visibility of system status
+- Match between system and the real world
+- User control and freedom
+- Consistency and standards
+- Error prevention
+- Recognition rather than recall
+- Flexibility and efficiency of use
+- Aesthetic and minimalist design
+- Help users recognize, diagnose, and recover from errors
+- Help and documentation
 
 ## Base URL
 
