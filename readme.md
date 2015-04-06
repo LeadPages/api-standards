@@ -18,6 +18,7 @@ information.
 - [Record Limits](#record-limits)
 - [Mock Responses](#mock-responses)
 - [JSONP](#jsonp)
+- [Contributing](#contributing)
 - [Credits](#credits)
 
 ## Guidelines
@@ -205,6 +206,19 @@ environment, an error should be raised.
 JSONP is most easily explained with an example, like [this one](http://stackoverflow.com/questions/2067472/what-is-jsonp-all-about?answertab=votes#tab-top)
 on Stack Overflow.
 
+## Contributing
+
+Contributing follows a fork, pull request & issue format. All ideas,
+improvements, critiques, and fixes are welcome. All contributers, including
+maintainers, must open pull requests, other than exceptional cases or basic
+repository chores.
+
+- If you have something that you feel is best represented **concretely**, just
+fork the repository and **create a pull request** with your changes.
+- If you have something that you feel is an **idea**, **brainstorm topic**, or
+is otherwise **still cookin'**, feel free to **open an issue** and use the
+"idea" tag.
+
 ## Credits
 
 This document has been adapted from [The White House's API standards](https://github.com/WhiteHouse/api-standards).
@@ -215,3 +229,11 @@ This document borrows heavily from:
 - [API Facade Pattern](http://apigee.com/about/resources/ebooks/api-fa%C3%A7ade-pattern) by **Brian Mulloy** Apigee
 - [Web API Design](http://pages.apigee.com/web-api-design-ebook.html) by **Brian Mulloy**, Apigee
 - [Designing HTTP Interfaces and RESTful Web Services](https://www.youtube.com/watch?v=zEyg0TnieLg)
+
+Additionally, this document has been created and improved thanks to the
+following people:
+
+- [bendemaree](https://github.com/bendemaree)
+- [brechin](https://github.com/brechin)
+- [kristenwomack](https://github.com/kristenwomack)
+- [rskm1](https://github.com/rskm1)
