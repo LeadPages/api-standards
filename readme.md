@@ -8,16 +8,18 @@ information.
 
 ## Contents
 
+Items marked as "under review" should not be considered usable and may not be
+used as reference material.
+
 - [Overview](#overview)
 - [Base URL](#base-url)
 - [Resources](#resources)
-- [HTTP Verbs](#http-verbs)
-- [Responses](#responses)
-- [Error handling](#error-handling)
-- [Versions](#versions)
-- [Record Limits](#record-limits)
-- [Mock Responses](#mock-responses)
-- [JSONP](#jsonp)
+- (under review) [HTTP Verbs](#http-verbs)
+- (under review) [Responses](#responses)
+- (under review) [Error handling](#error-handling)
+- (under review) [Record Limits](#record-limits)
+- (under review) [Mock Responses](#mock-responses)
+- (under review) [JSONP](#jsonp)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -221,6 +223,8 @@ general should not accept creation requests. In concrete examples:
 
 ## HTTP Verbs
 
+**This section is under review.**
+
 HTTP verbs, or methods, should be used in compliance with their definitions
 under the [HTTP/1.1](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
 standard.
@@ -238,6 +242,8 @@ map to create, read, update, delete operations in a particular context:
 
 
 ## Responses
+
+**This section is under review.**
 
 - No values in keys
 - No internal-specific names (e.g. "node" and "taxonomy term")
@@ -267,6 +273,8 @@ Values in keys:
 ```
 
 ## Error handling
+
+**This section is under review.**
 
 Error responses should include a common HTTP status code, message for the
 developer, message for the end-user (when appropriate), internal error code
@@ -303,6 +311,8 @@ example:
 
 ## Record limits
 
+**This section is under review.**
+
 - If no limit is specified, return results with a default limit.
 - To get records 51 through 75, request `http://example.com/magazines?limit=25&offset=50`
 where:
@@ -326,6 +336,8 @@ Information about record limits and total available count should also be include
 
 ## Mock Responses
 
+**This section is under review.**
+
 It is suggested that each resource accept a 'mock' parameter on the testing
 server. Passing this parameter should return a mock data response (bypassing
 the backend).
@@ -337,6 +349,8 @@ Note that if the mock parameter is included in a request to the production
 environment, an error should be raised.
 
 ## JSONP
+
+**This section is under review.**
 
 JSONP is most easily explained with an example, like [this one](http://stackoverflow.com/questions/2067472/what-is-jsonp-all-about?answertab=votes#tab-top)
 on Stack Overflow.
