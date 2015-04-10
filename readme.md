@@ -152,6 +152,9 @@ stored, and then a `self` URL (containing `latest`) is later accessed, the
 returned resource's schema could have changed since the last access. Thus, the
 idea that the stored record is the "latest" is incorrect.
 
+Versions must be maintained at least one version back. If the `v3` API is
+current, the `v2` API must be marked as deprecated but kept available.
+
 Some valid examples of versions:
 - `v1`
 - `v2`
@@ -297,16 +300,6 @@ client-side problem, or failure due to server-side problem (respectively):
 - `200 OK`
 - `400 Bad Request`
 - `500 Internal Server Error`
-
-
-## Versions
-
-- Never release an API without a version number.
-- Versions should be integers, not decimal numbers, prefixed with `v`. For
-example:
-    - Good: `v1`, `v2`, `v3`
-    - Bad: `v-1.1`, `v1.2`, `1.3`
-- Maintain APIs at least one version back.
 
 
 ## Record limits
