@@ -10,8 +10,7 @@ information.
 
 - [Overview](#overview)
 - [Base URL](#base-url)
-- [Pragmatic REST](#pragmatic-rest)
-- [RESTful URLs](#restful-urls)
+- [Resources](#resources)
 - [HTTP Verbs](#http-verbs)
 - [Responses](#responses)
 - [Error handling](#error-handling)
@@ -76,47 +75,40 @@ is the ideal starting point, but they are summarized here.
 
 ## Base URL
 
-The base URL of an API resource reflects a few key considerations. Examples of
-well-formed base URLs:
+The base URL of an API resource reflects a few key considerations. The first
+example base URL is the primary case.
+
+Examples of acceptable base URLs:
 
 - `https://api.company.com/data/v1`
 - `https://product.company.com/api/v1`
 - `https://company.com/api/v1`
 
-For clarification, here are the base URLs in the context of a full
-resource URL:
+For clarification, here are the base URLs in the context of a full resource
+URL. These are **not** base URLs:
 
-- `https://api.company.com/data/v1/widgets/1`
-- `https://product.company.com/api/v1/widgets/1`
-- `https://company.com/api/v1/widgets/1`
+- `https://api.company.com/data/v1/widgets/a1b2c3`
+- `https://product.company.com/api/v1/widgets/a1b2c3`
+- `https://company.com/api/v1/widgets/a1b2c3`
 
-The first example base URL is the primary case. The key considerations to
-note in that first URL:
 
-- The protocol (`https`) is specified in the base URL. This is purposeful.
-SSL is a minimum requirement and specifying a base URL beginning with `http`
-is invalid. There are [lots](http://googleonlinesecurity.blogspot.com/2014/08/https-as-ranking-signal_6.html)
+What follows are high-level things to notice in these URLs, and they are
+ordered by first appearance.
+
+### SSL/TLS
+The protocol (`https`) is specified in the base URL. This is purposeful.
+SSL/TLS is a minimum requirement and specifying a base URL beginning with
+`http` is invalid. There are [lots](http://googleonlinesecurity.blogspot.com/2014/08/https-as-ranking-signal_6.html)
 of [resources](http://stackoverflow.com/questions/548029/how-much-overhead-does-ssl-impose)
 and [discussions](http://code.flickr.net/2014/04/30/flickr-api-going-ssl-only-on-june-27th-2014/)
 about [why](https://blog.cloudflare.com/how-cloudflare-is-making-ssl-fast/)
-SSL only is a good choice and why others choose that path, and addressing
+SSL/TLS only is a good choice and why others choose that path, and addressing
 concerns about speed and overhead.
-- A version (`v1`) is specified in the URL. Further information about
-versioning is available later in this document, but in short, API versioning
-helps ease transitions when there are breaking changes to the interface put
-forward by an API, and makes for smoother and more straightforward deprecation
-plans. If an API update will break clients and implementations, at a minimum,
-we want to know how many will be affected, and a versioned API is the place to
-start for finding that information.
-- The API is named `data`. You could call this the "Data API" based on the
-fragment in the URL. You could also have API names like "administration" or
-"tasks." The goal of having an API name in the path is to provide a sensible
-grouping of top-level objects. In an Admin API, you might have top-level
-objects like "users" that would not make sense if placed next to "tasks" in a
-Tasks API. In the full resource URL example above, the top-level objects are
-`widgets`.
-- The API in this example is hosted on a subdomain dedicated to a set of APIs.
-This distinction is important, because it necessitates the API name.
+
+### Domain Scheme
+The API in this example is hosted on a subdomain dedicated to a set of APIs.
+This distinction is important, because it necessitates the idea of an API
+name, discussed below.
   - If there are multiple APIs, and they make sense grouped under the company
   as an entity, having several named APIs is a logical grouping.
   - If the subdomain is a specific product, service, or similar, and there are
@@ -127,61 +119,105 @@ This distinction is important, because it necessitates the API name.
   - If the company, product, and API can be considered a singular unit, the
   third example, with no subdomain, is sensible.
 
-## Pragmatic REST
+### API Names
+This API is named `data`. You would call this the "Data API" based on the
+fragment in the URL. You could also have API names like `admin` or `tasks`
+that you would call the "Administration API" and "Tasks API," respectively.
+The goal of having an API name in the path is to provide a sensible grouping
+of top-level objects. In an Admin API, you might have top-level objects like
+"users" that would not make sense if placed next to "tasks" in a Tasks API.
+In the full resource URL example above, the top-level objects are `widgets`.
 
-These guidelines aim to support a truly RESTful API. Here are a few exceptions:
+### Versioning
+A version (`v1`) is specified in the URL. API versioning helps ease
+transitions when there are breaking changes to the interface put forward by
+an API, and makes for smoother and more straightforward deprecation plans. If
+an API update will break clients and implementations, at a minimum, we want to
+know how many will be affected, and a versioned API is the place to
+start for finding that information.
 
-- Put the version number of the API in the URL (see examples below). Don't
-accept any requests that do not specify a version number.
-- Allow users to request formats like JSON or XML like this:
-    - `http://example.com/api/v1/magazines.json`
-    - `http://example.com/api/v1/magazines.xml`
+Version tags begin with a `v` and end with a a positive integer and have
+nothing in between. Requests without a version tag are invalid and must be
+rejected.
 
-## RESTful URLs
+There is a semantic "shortcut" version that is also valid. An API must always
+provide a version called `latest` that maps to the latest version of the API,
+though when the API returns responses that contain the base URL, they must
+replace the `latest` token with the latest version (for example, `v3`). This
+helps establish the idea that the record returned is canonical for a given
+version. Think of this in a concrete example: if a record is returned and
+stored, and then a `self` URL (containing `latest`) is later accessed, the
+returned resource's schema could have changed since the last access. Thus, the
+idea that the stored record is the "latest" is incorrect.
 
-### General guidelines for RESTful URLs
+Some valid examples of versions:
+- `v1`
+- `v2`
+- `v3`
+- `latest`
+
+Some invalid examples of versions:
+- `v1.0`
+- `ver1`
+- `current`
+- `v1beta`
+
+## Resources
+
+Resources are represented by a path that follows a base URL. You can consider
+the resource path as the canonical path for a resource, despite the base URL.
+
+These are the full URLs from the base URL section:
+
+- `https://api.company.com/data/v1/widgets/a1b2c3`
+- `https://product.company.com/api/v1/widgets/a1b2c3`
+- `https://company.com/api/v1/widgets/a1b2c3`
+
+Note that if you strip the base URL from the front, they are now all the same:
+
+- `/widgets/a1b2c3`
+- `/widgets/a1b2c3`
+- `/widgets/a1b2c3`
+
+What follows are some more specific guidelines around resource paths.
+
+### General
+
+Here are some basics for RESTful URLs:
+
 - A URL identifies a resource.
-- URLs should include nouns, not verbs.
-- Use plural nouns only, for consistency (no singular nouns).
-- Use HTTP verbs (`GET`, `POST`, `PUT`, `DELETE`, etc.) to operate on the
-collections and elements.
-- You shouldn’t need to go deeper than `resource/identifier/resource`.
-- Put the version number immediately after the base api name in your URL, for example
-`http://example.com/api/v1/path/to/resource`.
-- URL v. header:
-    - If it changes the logic you write to handle the response, put it in the
-    URL.
-    - If it doesn’t change the logic for each response, like OAuth info, put
-    it in the header.
-- Specify optional fields in a comma separated list.
-- Formats should be in the form of `api/v2/resource/{id}.json`
+- URLs must use plural nouns, not verbs.
+- Do not use "formats" in the URL. Some APIs place a type, like `.json`, at
+the end of the URL.
 
-### Good URL examples
-- List of magazines:
-    - `GET http://www.example.com/api/v1/magazines.json`
-- Filtering is a query:
-    - `GET http://www.example.com/api/v1/magazines.json?year=2011&sort=desc`
-    - `GET http://www.example.com/api/v1/magazines.json?topic=economy&year=2011`
-- A single magazine in JSON format:
-    - `GET http://www.example.com/api/v1/magazines/1234.json`
-- All articles in (or belonging to) this magazine:
-    - `GET http://www.example.com/api/v1/magazines/1234/articles.json`
-- All articles in this magazine in XML format:
-    - `GET http://www.example.com/api/v1/magazines/1234/articles.xml`
-- Specify optional fields in a comma separated list:
-    - `GET http://www.example.com/api/v1/magazines/1234.json?fields=title,subtitle,date`
-- Add a new article to a particular magazine:
-    - `POST http://www.example.com/api/v1/magazines/1234/articles`
+### Collections, Resources, and Nesting
 
-### Bad URL examples
-- Non-plural noun:
-    - `http://www.example.com/magazine`
-    - `http://www.example.com/magazine/1234`
-    - `http://www.example.com/publisher/magazine/1234`
-- Verb in URL:
-    - `http://www.example.com/magazine/1234/create`
-- Filter outside of query string
-    - `http://www.example.com/magazines/2011/desc`
+Given a resource path like...
+
+`/widgets/a1b2c3/sprockets`
+
+...you can note several things:
+
+- `widgets` and `sprockets` are collections. They are plural nouns.
+Collections hold resources and relate to the "type" of something.
+- Some specific resources, like this one (`a1b2c3`) may themselves hold
+collections (in this case, `sprockets`). Only in extrodinary situations should
+you consider nesting any further, and you should not specify a resource after
+the secondary collection (like `/widgets/a1b2c3/sprockets/d4f5g6`).
+- If you're using a nested resource, like `/widget/a1b2c3/sprockets`, note that
+this is a strong implication that `sprockets` **must** be created as a child of
+a single `widget` (`a1b2c3`). What this then implicates is that you may not,
+in general, create a `sprocket` at the root `sprocket` endpoint. The root `sprocket`
+endpoint may list all of the current context's `sprocket`s, or similar, but in
+general should not accept creation requests. In concrete examples:
+  - `POST /sprockets` is invalid.
+  - `POST /widgets/a1b2c3/sprockets` will create a `sprocket` that may be
+  returned as a property within `/widgets/a1b2c3`.
+  - `GET /widgets/a1b2c3/sprockets` will return all the `sprocket`s that are
+  in the collection for the `a1b2c3` widget.
+  - `GET /sprockets/d4f5g6` will return a specific `sprocket`.
+  - `GET /sprockets` may return all `sprocket`s, regardless of `widget`
+  collection.
 
 ## HTTP Verbs
 
