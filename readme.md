@@ -14,12 +14,12 @@ used as reference material.
 - [Overview](#overview)
 - [Base URL](#base-url)
 - [Resources](#resources)
-- [HTTP Verbs](#http-verbs)
 - (under review) [Responses](#responses)
-- (under review) [Error handling](#error-handling)
+    - [CORS](#cors)
+- [HTTP Verbs](#http-verbs)
+- [Error Handling](#error-handling)
 - (under review) [Record Limits](#record-limits)
-- (under review) [Mock Responses](#mock-responses)
-- (under review) [JSONP](#jsonp)
+- [Notes](#notes)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -227,7 +227,7 @@ general should not accept creation requests. In concrete examples:
 ## HTTP Verbs
 
 HTTP verbs, or methods, should be used in compliance with their definitions
-under the [HTTP/1.1](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
+under the HTTP/1.1 [Method Definitions](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
 standard.
 
 The following mapping guides the verbs to some equivalent wording.
@@ -255,6 +255,27 @@ map to create, read, update, delete operations in a particular context:
 
 ## Responses
 
+Most APIs should return JSON responses in a particular format. We'll begin
+with an example response.
+
+```json
+{
+    "_meta": {
+        "$schema": "https://api.leadpages.io/data/v1/widgets/schema",
+    },
+    "_items": [
+        {
+            "_id": "JMkbFSLGRCaqa8egdNiJTh",
+            "_uri": "https://api.leadpages.io/data/v1/widgets/5cd9b168-ed04-11e4-a659-fd8bf206b734",
+            "_created": "2015-04-24T18:35:10.656940+00:00",
+            "_updated": "2015-04-24T18:35:10.656976+00:00",
+        },
+        "color": "fuschia",
+        "make": "Spacely"
+    ]
+}
+```
+
 **This section is under review.**
 
 - No values in keys
@@ -262,54 +283,45 @@ map to create, read, update, delete operations in a particular context:
 - Metadata should only contain direct properties of the response set, not
 properties of the members of the response set
 
-### Good examples
 
-No values in keys:
+### Error Handling
 
-```json
-"tags": [
-    {"id": "125", "name": "Environment"},
-    {"id": "834", "name": "Water Quality"}
-]
-```
-
-### Bad examples
-
-Values in keys:
-
-```json
-"tags": [
-    {"125": "Environment"},
-    {"834": "Water Quality"}
-],
-```
-
-## Error handling
-
-**This section is under review.**
-
-Error responses should include a common HTTP status code, message for the
-developer, message for the end-user (when appropriate), internal error code
-(corresponding to some specific internally determined ID), links where
-developers can find more info. For example:
+Error responses should include a message for the developer, an optional
+internal (diagnostic) error code, and documentation links (if applicable)
+where developers can find more info. For example:
 
 ```json
 {
-    "status" : 400,
-    "developerMessage" : "Verbose, plain language description of the problem. Provide developers suggestions about how to solve their problems here",
-    "userMessage" : "This is a message that can be passed along to end-users, if needed.",
-    "errorCode" : "444444",
-    "moreInfo" : "http://www.example.com/developer/path/to/help/for/444444, http://drupal.org/node/444444",
+    "error_code": 400,
+    "error_ref" : "a1b2c3",
+    "message": "The attribute `foo` is required.",
+    "ref": [
+        "http://docs.leadpages.io/errors/400",
+        "http://docs.leadpages.io/errors/a1b2c3",
+        "http://docs.leadpages.io"
+    ]
 }
 ```
 
-Use three simple, common response codes indicating success, failure due to
-client-side problem, or failure due to server-side problem (respectively):
+Tend towards the most common response codes when indicating success, failure,
+or status. All of the reason phrases should be as presented in [RFC 2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
+Some of the most common codes and a possible reason include:
 
-- `200 OK`
-- `400 Bad Request`
-- `500 Internal Server Error`
+- `200 OK` as a general success status
+- `201 Created` when a new resource is created
+- `204 No Content` when a resource is deleted
+- `400 Bad Request` when a required value is missing
+- `403 Forbidden` when not logged in
+- `404 Not Found` when a resource is not found
+- `500 Internal Server Error` when a server failure occurs
+- `503 Service Unavailable` when the service is temporarily overloaded
 
+### CORS
+
+Services are responsible for providing a CORS implementation that is complete
+and will allow natural communication with the API in a browser-based context.
+This means that any request must also return a proper `OPTIONS` response for
+that resource that will allow the request.
 
 ## Record limits
 
@@ -336,26 +348,22 @@ Information about record limits and total available count should also be include
 }
 ```
 
-## Mock Responses
+## Notes
 
-**This section is under review.**
+Some other notes and considerations:
 
-It is suggested that each resource accept a 'mock' parameter on the testing
-server. Passing this parameter should return a mock data response (bypassing
-the backend).
+### XML
 
-Implementing this feature early in development ensures that the API will
-exhibit consistent behavior, supporting a test driven development methodology.
+JSON is the only required response type at this time, and in general, XML
+as a response should be considered only in exceptional cases. Other response
+formats, particularly those that may be exposed as a service-to-service
+interface, are not covered in the scope of this HTTP-centric document.
 
-Note that if the mock parameter is included in a request to the production
-environment, an error should be raised.
+### JSONP
 
-## JSONP
-
-**This section is under review.**
-
-JSONP is most easily explained with an example, like [this one](http://stackoverflow.com/questions/2067472/what-is-jsonp-all-about?answertab=votes#tab-top)
-on Stack Overflow.
+JSONP is not supported. Use CORS instead. JSONP does not support methods other
+than `GET`, and is generally regarded by the community as being replaced by
+CORS.
 
 ## Contributing
 
