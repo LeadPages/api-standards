@@ -14,7 +14,7 @@ used as reference material.
 - [Overview](#overview)
 - [Base URL](#base-url)
 - [Resources](#resources)
-- (under review) [HTTP Verbs](#http-verbs)
+- [HTTP Verbs](#http-verbs)
 - (under review) [Responses](#responses)
 - (under review) [Error handling](#error-handling)
 - (under review) [Record Limits](#record-limits)
