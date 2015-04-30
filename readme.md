@@ -265,13 +265,15 @@ with an example response.
     },
     "_items": [
         {
-            "_id": "JMkbFSLGRCaqa8egdNiJTh",
-            "_uri": "https://api.leadpages.io/data/v1/widgets/5cd9b168-ed04-11e4-a659-fd8bf206b734",
-            "_created": "2015-04-24T18:35:10.656940+00:00",
-            "_updated": "2015-04-24T18:35:10.656976+00:00",
-        },
-        "color": "fuschia",
-        "make": "Spacely"
+            "_meta" :{
+                "_id": "JMkbFSLGRCaqa8egdNiJTh",
+                "_uri": "https://api.leadpages.io/data/v1/widgets/5cd9b168-ed04-11e4-a659-fd8bf206b734",
+                "_created": "2015-04-24T18:35:10.656940+00:00",
+                "_updated": "2015-04-24T18:35:10.656976+00:00",
+            },
+            "color": "fuschia",
+            "make": "Spacely"
+        }
     ]
 }
 ```
