@@ -226,23 +226,32 @@ general should not accept creation requests. In concrete examples:
 
 ## HTTP Verbs
 
-**This section is under review.**
-
 HTTP verbs, or methods, should be used in compliance with their definitions
 under the [HTTP/1.1](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
 standard.
+
+The following mapping guides the verbs to some equivalent wording.
+
+| Method  | Synonym  | Description                                                                          |
+| ------- | -------- | ------------------------------------------------------------------------------------ |
+| GET     | Fetch    | Return the specified resource or list of resources                                   |
+| POST    | Create   | Create a new resource in the specified collection                                    |
+| PATCH   | Update   | Update the specified existing resource                                               |
+| PUT     | Replace  | Replace the specified resource                                                       |
+| DELETE  | Remove   | Delete the specified resource                                                        |
+| OPTIONS | Define   | View the schema and available actions for the resource or collection                 |
+| HEAD    | Describe | Return all of the information about a resource without returning the response itself |
+
 The action taken on the representation will be contextual to the media type
 being worked on and its current state. Here's an example of how HTTP verbs
 map to create, read, update, delete operations in a particular context:
 
-| HTTP Method     | `POST`          | `GET`     | `PUT`       | `DELETE` |
-| --------------- | --------------- | --------- | ----------- | -------- |
-| CRUD equivalent | CREATE          | READ      | UPDATE      | DELETE |
-| `/dogs`           | Create new dogs | List dogs | Bulk update | Delete all dogs |
-| `/dogs/1234`      | Error           | Show Bo   | If exists, update Bo; If not, error | Delete Bo |
-
-(Example from Web API Design, by Brian Mulloy, Apigee.)
-
+| Method          | Endpoint          | Description         |
+| --------------- | ---------------   | ------------------- |
+| `POST`          | `/widgets`        | Create a widget     |
+| `GET`           | `/widgets`        | List widgets        |
+| `POST`          | `/widgets/a1b2c3` | Invalid             |
+| `GET`           | `/widgets/a1b2c3` | Get a single widget |
 
 ## Responses
 
