@@ -30,6 +30,8 @@ used as reference material.
     - [CORS](#cors)
 - [Error Handling](#error-handling)
 - [Notes](#notes)
+    - [XML](#xml)
+    - [JSONP](#jsonp)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
