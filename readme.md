@@ -255,7 +255,7 @@ The following mapping guides the verbs to some equivalent wording.
 
 The action taken on the representation will be contextual to the media type
 being worked on and its current state. Here's an example of how HTTP verbs
-map to create, read, update, delete operations in a particular context:
+can map to different actions depending on context.
 
 | Method          | Endpoint          | Description         |
 | --------------- | ---------------   | ------------------- |
