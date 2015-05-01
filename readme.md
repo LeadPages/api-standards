@@ -267,12 +267,12 @@ can map to different actions depending on context.
 ### Headers
 
 The most basic header that API services must support, and that clients
-should provide, is the `Content-Type` header. In general, this header will be
-`application/json` to specify that the requesty body is JSON. However, API
-services must not require this header and must default to this media type if
-unspecified.
+should provide, is the `Content-Type` header. In general, the client will
+supply this header with the value `application/json` to specify that the
+request body is JSON. However, API services must not require this header and
+must default to this (`application/json`) media type if unspecified.
 
-The implication here is that the API service must be particularly resilient
+This creates an implication that the API service must be particularly resilient
 and stringent in its request parsing in order to prevent security issues.
 
 Similarly, if an `Accepts` header is unspecified, the service may assume that
