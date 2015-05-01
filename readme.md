@@ -13,6 +13,10 @@ used as reference material.
 
 - [Overview](#overview)
 - [Base URL](#base-url)
+    - [SSL/TLS](#ssltls)
+    - [Domain Scheme](#domain-scheme)
+    - [API Names](#api-names)
+    - [Versioning](#versioning)
 - [Resources](#resources)
 - [Requests](#requests)
     - [Methods](#methods)
@@ -343,8 +347,9 @@ specific resource, as well as some actual data properties
 
 There are also two very general patterns to notice:
 
-- No values in keys.
+- No values are used as keys.
 - The response is an object despite the fact that it is returning a listing.
+The listing is nested within the containing object.
 
 ### IDs
 
@@ -355,8 +360,8 @@ of the response.
 
 ### Timestamps
 
-Timestamps included in responses must always be timezone-aware [ISO 8601](https://xkcd.com/1179/)
-format.
+Timestamps included in responses must always be in the timezone-aware
+[ISO 8601](https://xkcd.com/1179/) format.
 
 There are two timestamps that exemplify this format that must be returned
 with every resource, as seen above. They represent the creation and update
@@ -369,7 +374,7 @@ most recent time the resource was updated.
 URIs present in the response should be absolute, including host and protocol
 (i.e., HTTPS). This prevents ambiguity if, in some future state, there is a
 need to reference schema, resources, etc. across domains, and also assists in
-making the [HTTPS-only](#ssl-tls) requirement concrete.
+making the [HTTPS-only](#ssltls) requirement concrete.
 
 Additionally, resources must be returned with a `_uri` property that
 always returns the canonical version of the resource. Note that there may be
