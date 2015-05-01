@@ -14,11 +14,17 @@ used as reference material.
 - [Overview](#overview)
 - [Base URL](#base-url)
 - [Resources](#resources)
-- (under review) [Responses](#responses)
+- [Requests](#requests)
+    - [Methods](#methods)
+    - [Headers](#headers)
+    - [Querying](#querying)
+- [Responses](#responses)
+    - [IDs](#ids)
+    - [Timestamps](#timestamps)
+    - [URIs](#uris)
+    - [Pagination](#pagination)
     - [CORS](#cors)
-- [HTTP Verbs](#http-verbs)
 - [Error Handling](#error-handling)
-- (under review) [Record Limits](#record-limits)
 - [Notes](#notes)
 - [Contributing](#contributing)
 - [Credits](#credits)
@@ -224,9 +230,14 @@ general should not accept creation requests. In concrete examples:
   - `GET /sprockets` may return all `sprocket`s, regardless of `widget`
   collection.
 
-## HTTP Verbs
+## Requests
 
-HTTP verbs, or methods, should be used in compliance with their definitions
+There are few stipulations involved with an API request. APIs should aim to be
+permissive and not rigid wherever that does not introduce ambiguity.
+
+### Methods
+
+Methods, or HTTP verbs, should be used in compliance with their definitions
 under the HTTP/1.1 [Method Definitions](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
 standard.
 
@@ -253,6 +264,40 @@ map to create, read, update, delete operations in a particular context:
 | `POST`          | `/widgets/a1b2c3` | Invalid             |
 | `GET`           | `/widgets/a1b2c3` | Get a single widget |
 
+### Headers
+
+The most basic header that API services must support, and that clients
+should provide, is the `Content-Type` header. In general, this header will be
+`application/json` to specify that the requesty body is JSON. However, API
+services must not require this header and must default to this media type if
+unspecified.
+
+The implication here is that the API service must be particularly resilient
+and stringent in its request parsing in order to prevent security issues.
+
+Similarly, if an `Accepts` header is unspecified, the service may assume that
+the media type should be `application/json`, though it must be rigorous in
+specifying this in the response's `Content-Type` header.
+
+These specifications can be considered a direct application of [Postel's
+Robustness Principle](http://en.wikipedia.org/wiki/Robustness_principle).
+
+### Querying
+
+Querying, to specify certain output in the response, is generally very open.
+No API service should reject or strip any particular query parameters, and
+modifying the query (or "search") portion of the URL must be an exclusively
+additive process. By extension, even queries that may seem nonsensical (for
+example, specifying a limit as if paginating, on a request for a single
+resource) must not be rejected as invalid input.
+
+There are some query parameters that must be supported by any API service:
+
+| Parameter | Description                                              |
+| --------- | -------------------------------------------------------- |
+| `limit`   | Maximum number of items to return, if listing resources. |
+| `offset`  | Where in the result set to begin listing resources.      |
+
 ## Responses
 
 Most APIs should return JSON responses in a particular format. We'll begin
@@ -262,11 +307,15 @@ with an example response.
 {
     "_meta": {
         "$schema": "https://api.leadpages.io/data/v1/widgets/schema",
+        "_limit": 20,
+        "_total": 30,
+        "_count": 10,
+        "_offset": 20
     },
     "_items": [
         {
             "_meta" :{
-                "_id": "JMkbFSLGRCaqa8egdNiJTh",
+                "_id": "5cd9b168-ed04-11e4-a659-fd8bf206b734",
                 "_uri": "https://api.leadpages.io/data/v1/widgets/5cd9b168-ed04-11e4-a659-fd8bf206b734",
                 "_created": "2015-04-24T18:35:10.656940+00:00",
                 "_updated": "2015-04-24T18:35:10.656976+00:00",
@@ -278,13 +327,65 @@ with an example response.
 }
 ```
 
-**This section is under review.**
+Some things to notice about this response format:
 
-- No values in keys
-- No internal-specific names (e.g. "node" and "taxonomy term")
-- Metadata should only contain direct properties of the response set, not
-properties of the members of the response set
+- Several of the fields begin with an `_`. All underscore-prefixed keys are
+reserved and may not be used for data properties. Additionally, they are
+read-only.
+- This is a response from listing widgets. We have two clear ways of inferring
+this:
+    - The `_meta` section includes pagination information.
+    - There is an `_items` key at the root of the response object, that is a
+    list of objects.
+- For the widget in the list, there are additional `_meta` properties for that
+specific resource, as well as some actual data properties
+(`color` and `make`).
 
+There are also two very general patterns to notice:
+
+- No values in keys.
+- The response is an object despite the fact that it is returning a listing.
+
+### IDs
+
+Every resource should have a unique ID associated with it, and in general
+these should be version 4 UUIDs as specified in [RFC 4122](https://tools.ietf.org/html/rfc4122).
+A resource's ID must be returned in the `_id` property in the `_meta` section
+of the response.
+
+### Timestamps
+
+Timestamps included in responses must always be timezone-aware [ISO 8601](https://xkcd.com/1179/)
+format.
+
+There are two timestamps that exemplify this format that must be returned
+with every resource, as seen above. They represent the creation and update
+times for this resoure, where the creation time (`_created`) is set only once
+when the resource is created, and the update time (`_updated`) reflects the
+most recent time the resource was updated.
+
+### URIs
+
+URIs present in the response should be absolute, including host and protocol
+(i.e., HTTPS). This prevents ambiguity if, in some future state, there is a
+need to reference schema, resources, etc. across domains, and also assists in
+making the [HTTPS-only](#ssl-tls) requirement concrete.
+
+Additionally, resources must be returned with a `_uri` property that
+always returns the canonical version of the resource. Note that there may be
+special cases regarding this URI as specified in the [versioning](#versioning)
+section.
+
+### Pagination
+
+The pagination parameters are as follows:
+
+| Key       | Description                                                         |
+| --------  | ----------------------------------------------------------------    |
+| `_limit`  | Max number of items that may be returned in this listing.           |
+| `_total`  | Total number of items that matched the listing or query.            |
+| `_count`  | Actual number of items in the listing response.                     |
+| `_offset` | The starting point in the result set that this response represents. |
 
 ### Error Handling
 
@@ -324,31 +425,6 @@ Services are responsible for providing a CORS implementation that is complete
 and will allow natural communication with the API in a browser-based context.
 This means that any request must also return a proper `OPTIONS` response for
 that resource that will allow the request.
-
-## Record limits
-
-**This section is under review.**
-
-- If no limit is specified, return results with a default limit.
-- To get records 51 through 75, request `http://example.com/magazines?limit=25&offset=50`
-where:
-    - `offset=50` means "skip the first 50 records"
-    - `limit=25` means, "return a maximum of 25 records"
-
-Information about record limits and total available count should also be included in the response. Example:
-
-```json
-{
-    "metadata": {
-        "resultset": {
-            "count": 227,
-            "offset": 25,
-            "limit": 25
-        }
-    },
-    "results": []
-}
-```
 
 ## Notes
 
