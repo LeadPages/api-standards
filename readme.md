@@ -89,24 +89,22 @@ is the ideal starting point, but they are summarized here.
 
 ## Base URL
 
-The base URL of an API resource reflects a few key considerations. The first
-example base URL is the primary case.
+The base URL of an API resource reflects a few key considerations. This
+example base URL is the primary URL structure.
 
-Examples of acceptable base URLs:
+- `https://api.company.com/service/v1`
 
-- `https://api.company.com/data/v1`
-- `https://product.company.com/api/v1`
-- `https://company.com/api/v1`
+For clarification, here is the base URL in the context of a full resource
+URL. This is **not** a base URL:
 
-For clarification, here are the base URLs in the context of a full resource
-URL. These are **not** base URLs:
+- `https://api.company.com/service/v1/sprockets/a1b2c3`
 
-- `https://api.company.com/data/v1/widgets/a1b2c3`
-- `https://product.company.com/api/v1/widgets/a1b2c3`
-- `https://company.com/api/v1/widgets/a1b2c3`
+In some cases, it may make sense to structure the base URL to include the API
+name as a subdomain.
 
+- `https://service.company.com/api/v1`
 
-What follows are high-level things to notice in these URLs, and they are
+What follows are high-level things to notice in the base URL, and they are
 ordered by first appearance.
 
 ### SSL/TLS
@@ -123,15 +121,14 @@ concerns about speed and overhead.
 The API in this example is hosted on a subdomain dedicated to a set of APIs.
 This distinction is important, because it necessitates the idea of an API
 name, discussed below.
-  - If there are multiple APIs, and they make sense grouped under the company
-  as an entity, having several named APIs is a logical grouping.
-  - If the subdomain is a specific product, service, or similar, and there are
-  very few of them, the second example may make more sense. In this case, the
-  API name is replaced with the `api` fragment to indicate that this is the
-  sole, self-contained API for this item. This API should be comprehensive and
-  should not overlap functionality with other APIs located on other subdomains.
-  - If the company, product, and API can be considered a singular unit, the
-  third example, with no subdomain, is sensible.
+
+- If there are multiple APIs, and they make sense grouped under the company
+as an entity, having several named APIs is a logical grouping.
+- If the subdomain is a specific product, service, or similar, and there are
+very few of them, the alternate example may make more sense. In this case,
+the API name is replaced with the `api` fragment to indicate that this is the
+sole, self-contained API for this item. This API should be comprehensive and
+should not overlap functionality with other APIs located on other subdomains.
 
 ### API Names
 This API is named `data`. You would call this the "Data API" based on the
@@ -141,6 +138,19 @@ The goal of having an API name in the path is to provide a sensible grouping
 of top-level objects. In an Admin API, you might have top-level objects like
 "users" that would not make sense if placed next to "tasks" in a Tasks API.
 In the full resource URL example above, the top-level objects are `widgets`.
+
+A few notes about choosing an API name:
+
+- The name should either reflect a service or a branded product, and ideally
+the name will reflect a service. Thus, an API name like `aggregator` should be
+chosen over some branded equivalent in most cases.
+- The name should never reflect an internal or informal name, like a project
+or team codename.
+
+There are some heuristics for choosing an API name that reflects a generic
+service vs. a product-centric API name. For example, product-centric APIs are
+likely to utilize several service APIs as components, and may only function to
+house the data model and schema for a resource.
 
 ### Versioning
 A version (`v1`) is specified in the URL. API versioning helps ease
