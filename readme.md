@@ -164,24 +164,32 @@ Version tags begin with a `v` and end with a a positive integer and have
 nothing in between. Requests without a version tag are invalid and must be
 rejected.
 
-There is a semantic "shortcut" version that is also valid. An API must always
-provide a version called `latest` that maps to the latest version of the API,
-though when the API returns responses that contain the base URL, they must
-replace the `latest` token with the latest version (for example, `v3`). This
-helps establish the idea that the record returned is canonical for a given
-version. Think of this in a concrete example: if a record is returned and
-stored, and then a `self` URL (containing `latest`) is later accessed, the
-returned resource's schema could have changed since the last access. Thus, the
-idea that the stored record is the "latest" is incorrect.
+An API must always provide the latest version as part of the API metadata, for
+example, as a response at the root of the API (`/sprockets/v1`).
 
 Versions must be maintained at least one version back. If the `v3` API is
-current, the `v2` API must be marked as deprecated but kept available.
+current, the `v2` API must be marked as deprecated but kept available. This
+helps solidfy the "contract" between the service and the developer. One of the
+reasons having an API version is so important is because the schema of the API
+is provided by the API service itself; thus, the API version represents not
+just functionality, but actually the version of the data model itself.
+
+The API may include minor or patch version information as part of the
+metadata of the API or response.
+
+Based on the idea that the version also reflects the data model, schema
+changes have the following impacts on the version:
+
+| Change             | Major Version | Minor Version |
+| ------------------ | ------------- | ------------- |
+| Add optional field | No change     | Increment     |
+| Add required field | Increment     | Reset         |
+| Change field type  | Increment     | Reset         |
 
 Some valid examples of versions:
 - `v1`
 - `v2`
 - `v3`
-- `latest`
 
 Some invalid examples of versions:
 - `v1.0`
