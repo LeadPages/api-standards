@@ -374,8 +374,12 @@ The listing is nested within the containing object.
 ### IDs
 
 Every resource should have a unique ID associated with it, and in general
-these should be version 4 UUIDs as specified in [RFC 4122](https://tools.ietf.org/html/rfc4122).
-A resource's ID must be returned in the `_id` property in the `_meta` section
+these should be version 4 UUIDs as specified in [RFC 4122](https://tools.ietf.org/html/rfc4122)
+and then compressed into base57. A concrete reference for this process is
+using the [`shortuuid`](https://github.com/stochastic-technologies/shortuuid)
+library.
+
+A resource's ID must be returned in the `id` property in the `_meta` section
 of the response.
 
 ### Timestamps
