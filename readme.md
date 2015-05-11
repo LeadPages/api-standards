@@ -545,6 +545,11 @@ Additionally, this document has been created and improved thanks to the
 following people:
 
 - [bendemaree](https://github.com/bendemaree)
+- [bogdanp](https://github.com/bogdanp)
 - [brechin](https://github.com/brechin)
+- [ctharings](https://github.com/ctharings)
+- [daveisadork](https://github.com/daveisadork)
+- [jselby](https://github.com/jselby)
 - [kristenwomack](https://github.com/kristenwomack)
+- [nwswanson](https://github.com/nwswanson)
 - [rskm1](https://github.com/rskm1)
