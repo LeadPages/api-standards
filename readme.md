@@ -13,13 +13,25 @@ used as reference material.
 
 - [Overview](#overview)
 - [Base URL](#base-url)
+    - [SSL/TLS](#ssltls)
+    - [Domain Scheme](#domain-scheme)
+    - [API Names](#api-names)
+    - [Versioning](#versioning)
 - [Resources](#resources)
-- (under review) [HTTP Verbs](#http-verbs)
-- (under review) [Responses](#responses)
-- (under review) [Error handling](#error-handling)
-- (under review) [Record Limits](#record-limits)
-- (under review) [Mock Responses](#mock-responses)
-- (under review) [JSONP](#jsonp)
+- [Requests](#requests)
+    - [Methods](#methods)
+    - [Headers](#headers)
+    - [Querying](#querying)
+- [Responses](#responses)
+    - [IDs](#ids)
+    - [Timestamps](#timestamps)
+    - [URIs](#uris)
+    - [Pagination](#pagination)
+    - [CORS](#cors)
+- [Error Handling](#error-handling)
+- [Notes](#notes)
+    - [XML](#xml)
+    - [JSONP](#jsonp)
 - [Contributing](#contributing)
 - [Credits](#credits)
 
@@ -77,24 +89,22 @@ is the ideal starting point, but they are summarized here.
 
 ## Base URL
 
-The base URL of an API resource reflects a few key considerations. The first
-example base URL is the primary case.
+The base URL of an API resource reflects a few key considerations. This
+example base URL is the primary URL structure.
 
-Examples of acceptable base URLs:
+- `https://api.company.com/service/v1`
 
-- `https://api.company.com/data/v1`
-- `https://product.company.com/api/v1`
-- `https://company.com/api/v1`
+For clarification, here is the base URL in the context of a full resource
+URL. This is **not** a base URL:
 
-For clarification, here are the base URLs in the context of a full resource
-URL. These are **not** base URLs:
+- `https://api.company.com/service/v1/sprockets/3rDrZRbdeSJJeR4jQSWAjK`
 
-- `https://api.company.com/data/v1/widgets/a1b2c3`
-- `https://product.company.com/api/v1/widgets/a1b2c3`
-- `https://company.com/api/v1/widgets/a1b2c3`
+In some cases, it may make sense to structure the base URL to include the API
+name as a subdomain.
 
+- `https://service.company.com/api/v1`
 
-What follows are high-level things to notice in these URLs, and they are
+What follows are high-level things to notice in the base URL, and they are
 ordered by first appearance.
 
 ### SSL/TLS
@@ -111,15 +121,14 @@ concerns about speed and overhead.
 The API in this example is hosted on a subdomain dedicated to a set of APIs.
 This distinction is important, because it necessitates the idea of an API
 name, discussed below.
-  - If there are multiple APIs, and they make sense grouped under the company
-  as an entity, having several named APIs is a logical grouping.
-  - If the subdomain is a specific product, service, or similar, and there are
-  very few of them, the second example may make more sense. In this case, the
-  API name is replaced with the `api` fragment to indicate that this is the
-  sole, self-contained API for this item. This API should be comprehensive and
-  should not overlap functionality with other APIs located on other subdomains.
-  - If the company, product, and API can be considered a singular unit, the
-  third example, with no subdomain, is sensible.
+
+- If there are multiple APIs, and they make sense grouped under the company
+as an entity, having several named APIs is a logical grouping.
+- If the subdomain is a specific product, service, or similar, and there are
+very few of them, the alternate example may make more sense. In this case,
+the API name is replaced with the `api` fragment to indicate that this is the
+sole, self-contained API for this item. This API should be comprehensive and
+should not overlap functionality with other APIs located on other subdomains.
 
 ### API Names
 This API is named `data`. You would call this the "Data API" based on the
@@ -129,6 +138,19 @@ The goal of having an API name in the path is to provide a sensible grouping
 of top-level objects. In an Admin API, you might have top-level objects like
 "users" that would not make sense if placed next to "tasks" in a Tasks API.
 In the full resource URL example above, the top-level objects are `widgets`.
+
+A few notes about choosing an API name:
+
+- The name should either reflect a service or a branded product, and ideally
+the name will reflect a service. Thus, an API name like `aggregator` should be
+chosen over some branded equivalent in most cases.
+- The name should never reflect an internal or informal name, like a project
+or team codename.
+
+There are some heuristics for choosing an API name that reflects a generic
+service vs. a product-centric API name. For example, product-centric APIs are
+likely to utilize several service APIs as components, and may only function to
+house the data model and schema for a resource.
 
 ### Versioning
 A version (`v1`) is specified in the URL. API versioning helps ease
@@ -142,24 +164,32 @@ Version tags begin with a `v` and end with a a positive integer and have
 nothing in between. Requests without a version tag are invalid and must be
 rejected.
 
-There is a semantic "shortcut" version that is also valid. An API must always
-provide a version called `latest` that maps to the latest version of the API,
-though when the API returns responses that contain the base URL, they must
-replace the `latest` token with the latest version (for example, `v3`). This
-helps establish the idea that the record returned is canonical for a given
-version. Think of this in a concrete example: if a record is returned and
-stored, and then a `self` URL (containing `latest`) is later accessed, the
-returned resource's schema could have changed since the last access. Thus, the
-idea that the stored record is the "latest" is incorrect.
+An API must always provide the latest version as part of the API metadata, for
+example, as a response at the root of the API (`/sprockets/v1`).
 
 Versions must be maintained at least one version back. If the `v3` API is
-current, the `v2` API must be marked as deprecated but kept available.
+current, the `v2` API must be marked as deprecated but kept available. This
+helps solidfy the "contract" between the service and the developer. One of the
+reasons having an API version is so important is because the schema of the API
+is provided by the API service itself; thus, the API version represents not
+just functionality, but actually the version of the data model itself.
+
+The API may include minor or patch version information as part of the
+metadata of the API or response.
+
+Based on the idea that the version also reflects the data model, schema
+changes have the following impacts on the version:
+
+| Change             | Major Version | Minor Version |
+| ------------------ | ------------- | ------------- |
+| Add optional field | No change     | Increment     |
+| Add required field | Increment     | Reset         |
+| Change field type  | Increment     | Reset         |
 
 Some valid examples of versions:
 - `v1`
 - `v2`
 - `v3`
-- `latest`
 
 Some invalid examples of versions:
 - `v1.0`
@@ -172,17 +202,16 @@ Some invalid examples of versions:
 Resources are represented by a path that follows a base URL. You can consider
 the resource path as the canonical path for a resource, despite the base URL.
 
-These are the full URLs from the base URL section:
+This is the full URL from the base URL section, as well as the alternate
+version:
 
-- `https://api.company.com/data/v1/widgets/a1b2c3`
-- `https://product.company.com/api/v1/widgets/a1b2c3`
-- `https://company.com/api/v1/widgets/a1b2c3`
+- `https://api.company.com/service/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `https://service.company.com/api/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 
-Note that if you strip the base URL from the front, they are now all the same:
+Note that if you strip the base URL from the front, they are the same:
 
-- `/widgets/a1b2c3`
-- `/widgets/a1b2c3`
-- `/widgets/a1b2c3`
+- `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 
 What follows are some more specific guidelines around resource paths.
 
@@ -224,129 +253,269 @@ general should not accept creation requests. In concrete examples:
   - `GET /sprockets` may return all `sprocket`s, regardless of `widget`
   collection.
 
-## HTTP Verbs
+## Requests
 
-**This section is under review.**
+There are few stipulations involved with an API request. APIs should aim to be
+permissive and not rigid wherever that does not introduce ambiguity.
 
-HTTP verbs, or methods, should be used in compliance with their definitions
-under the [HTTP/1.1](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
+### Methods
+
+Methods, or HTTP verbs, should be used in compliance with their definitions
+under the HTTP/1.1 [Method Definitions](http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html)
 standard.
+
+The following mapping guides the verbs to some equivalent wording.
+
+| Method  | Synonym  | Description                                                                          |
+| ------- | -------- | ------------------------------------------------------------------------------------ |
+| GET     | Fetch    | Return the specified resource or list of resources                                   |
+| POST    | Create   | Create a new resource in the specified collection                                    |
+| PATCH   | Update   | Update the specified existing resource                                               |
+| PUT     | Replace  | Replace the specified resource                                                       |
+| DELETE  | Remove   | Delete the specified resource                                                        |
+| OPTIONS | Define   | View the schema and available actions for the resource or collection                 |
+| HEAD    | Describe | Return all of the information about a resource without returning the response itself |
+
 The action taken on the representation will be contextual to the media type
 being worked on and its current state. Here's an example of how HTTP verbs
-map to create, read, update, delete operations in a particular context:
+can map to different actions depending on context.
 
-| HTTP Method     | `POST`          | `GET`     | `PUT`       | `DELETE` |
-| --------------- | --------------- | --------- | ----------- | -------- |
-| CRUD equivalent | CREATE          | READ      | UPDATE      | DELETE |
-| `/dogs`           | Create new dogs | List dogs | Bulk update | Delete all dogs |
-| `/dogs/1234`      | Error           | Show Bo   | If exists, update Bo; If not, error | Delete Bo |
+| Method          | Endpoint                          | Description         |
+| --------------- | --------------------------------- | ------------------- |
+| `POST`          | `/widgets`                        | Create a widget     |
+| `GET`           | `/widgets`                        | List widgets        |
+| `POST`          | `/widgets/3rDrZRbdeSJJeR4jQSWAjK` | Invalid             |
+| `GET`           | `/widgets/3rDrZRbdeSJJeR4jQSWAjK` | Get a single widget |
 
-(Example from Web API Design, by Brian Mulloy, Apigee.)
+### Headers
 
+The most basic header that API services must support, and that clients
+should provide, is the `Content-Type` header. In general, the client will
+supply this header with the value `application/json` to specify that the
+request body is JSON. However, API services must not require this header and
+must default to this (`application/json`) media type if unspecified.
+
+This creates an implication that the API service must be particularly resilient
+and stringent in its request parsing in order to prevent security issues.
+
+Similarly, if an `Accepts` header is unspecified, the service may assume that
+the media type should be `application/json`, though it must be rigorous in
+specifying this in the response's `Content-Type` header.
+
+These specifications can be considered a direct application of [Postel's
+Robustness Principle](http://en.wikipedia.org/wiki/Robustness_principle).
+
+### Querying
+
+Querying, to specify certain output in the response, is generally very open.
+No API service should reject or strip any particular query parameters, and
+modifying the query (or "search") portion of the URL must be an exclusively
+additive process. By extension, even queries that may seem nonsensical (for
+example, specifying a limit as if paginating, on a request for a single
+resource) must not be rejected as invalid input.
+
+There are some query parameters that should be supported by any API service:
+
+| Parameter | Description                                              |
+| --------- | -------------------------------------------------------- |
+| `limit`   | Maximum number of items to return, if listing resources. |
+| `offset`  | Where in the result set to begin listing resources.      |
+| `cursor`  | Begin at this pointer into the listing response.         |
 
 ## Responses
 
-**This section is under review.**
-
-- No values in keys
-- No internal-specific names (e.g. "node" and "taxonomy term")
-- Metadata should only contain direct properties of the response set, not
-properties of the members of the response set
-
-### Good examples
-
-No values in keys:
-
-```json
-"tags": [
-    {"id": "125", "name": "Environment"},
-    {"id": "834", "name": "Water Quality"}
-]
-```
-
-### Bad examples
-
-Values in keys:
-
-```json
-"tags": [
-    {"125": "Environment"},
-    {"834": "Water Quality"}
-],
-```
-
-## Error handling
-
-**This section is under review.**
-
-Error responses should include a common HTTP status code, message for the
-developer, message for the end-user (when appropriate), internal error code
-(corresponding to some specific internally determined ID), links where
-developers can find more info. For example:
+Most APIs should return JSON responses in a particular format. We'll begin
+with an example response.
 
 ```json
 {
-    "status" : 400,
-    "developerMessage" : "Verbose, plain language description of the problem. Provide developers suggestions about how to solve their problems here",
-    "userMessage" : "This is a message that can be passed along to end-users, if needed.",
-    "errorCode" : "444444",
-    "moreInfo" : "http://www.example.com/developer/path/to/help/for/444444, http://drupal.org/node/444444",
-}
-```
-
-Use three simple, common response codes indicating success, failure due to
-client-side problem, or failure due to server-side problem (respectively):
-
-- `200 OK`
-- `400 Bad Request`
-- `500 Internal Server Error`
-
-
-## Record limits
-
-**This section is under review.**
-
-- If no limit is specified, return results with a default limit.
-- To get records 51 through 75, request `http://example.com/magazines?limit=25&offset=50`
-where:
-    - `offset=50` means "skip the first 50 records"
-    - `limit=25` means, "return a maximum of 25 records"
-
-Information about record limits and total available count should also be included in the response. Example:
-
-```json
-{
-    "metadata": {
-        "resultset": {
-            "count": 227,
-            "offset": 25,
-            "limit": 25
-        }
+    "_status": {
+        "code": 200
     },
-    "results": []
+    "_meta": {
+        "limit": 20,
+        "total": 30,
+        "count": 10,
+        "offset": 20
+    },
+    "_items": [
+        {
+            "_meta" :{
+                "id": "3rDrZRbdeSJJeR4jQSWAjK",
+                "uri": "https://api.leadpages.io/data/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK",
+                "created": "2015-04-24T18:35:10.656940+00:00",
+                "updated": "2015-04-24T18:35:10.656976+00:00",
+            },
+            "color": "fuschia",
+            "make": "Spacely",
+            "manufacturedOn": "2015-03-20T12:25:10.446976+00:00"
+        }
+    ]
 }
 ```
 
-## Mock Responses
+Some things to notice about this response format:
 
-**This section is under review.**
+- Several of the fields begin with an `_`. All underscore-prefixed keys are
+reserved and may not be used for data properties.
+- This is a response from listing widgets. We have two clear ways of inferring
+this:
+    - The `_meta` section includes pagination information.
+    - The reserved keys within the `_meta` section do not require an
+    underscore prefix.
+    - There is an `_items` key at the root of the response object, that is a
+    list of objects.
+- For the widget in the list, there are additional `_meta` properties for that
+specific resource, as well as some actual data properties
+(`color` and `make`).
+- A status is included. All responses must include status information as a way
+to display warnings for a successful request. Further information is available
+in the [error handling](#error-handling) section.
+- JSON properties are camelCase, like `manufacturedOn` above. Backends should
+use whatever casing style is best and transform the output to camelCase.
 
-It is suggested that each resource accept a 'mock' parameter on the testing
-server. Passing this parameter should return a mock data response (bypassing
-the backend).
+There are also two very general patterns to notice:
 
-Implementing this feature early in development ensures that the API will
-exhibit consistent behavior, supporting a test driven development methodology.
+- No values are used as keys.
+- The response is an object despite the fact that it is returning a listing.
+The listing is nested within the containing object.
 
-Note that if the mock parameter is included in a request to the production
-environment, an error should be raised.
+### IDs
 
-## JSONP
+Every resource should have a unique ID associated with it, and in general
+these should be version 4 UUIDs as specified in [RFC 4122](https://tools.ietf.org/html/rfc4122)
+and then compressed into base57. A concrete reference for this process is
+using the [`shortuuid`](https://github.com/stochastic-technologies/shortuuid)
+library.
 
-**This section is under review.**
+A resource's ID must be returned in the `id` property in the `_meta` section
+of the response.
 
-JSONP is most easily explained with an example, like [this one](http://stackoverflow.com/questions/2067472/what-is-jsonp-all-about?answertab=votes#tab-top)
-on Stack Overflow.
+### Timestamps
+
+Timestamps included in responses must always be in the timezone-aware
+[ISO 8601](https://xkcd.com/1179/) format.
+
+There are two timestamps that exemplify this format that must be returned
+with every resource, as seen above. They represent the creation and update
+times for this resoure, where the creation time (`_created`) is set only once
+when the resource is created, and the update time (`_updated`) reflects the
+most recent time the resource was updated.
+
+### URIs
+
+URIs present in the response should be absolute, including host, protocol, and
+scheme (i.e., HTTPS). This prevents ambiguity if, in some future state, there
+is a need to reference schema, resources, etc. across domains, and also
+assists in making the [HTTPS-only](#ssltls) requirement concrete.
+
+Additionally, resources must be returned with a `_uri` property that
+always returns the canonical version of the resource. Note that there may be
+special cases regarding this URI as specified in the [versioning](#versioning)
+section.
+
+### Pagination
+
+The pagination parameters are as follows:
+
+| Key      | Description                                                         |
+| -------  | ----------------------------------------------------------------    |
+| `limit`  | Max number of items that may be returned in this listing.           |
+| `total`  | Total number of items that matched the listing or query.            |
+| `offset` | The starting point in the result set that this response represents. |
+| `cursor` | A pointer into the result set that this response represents.        |
+
+When paginating, you may generally expect support for either:
+
+- A limit and offset pair to navigate within the set, and a total count of
+records.
+- A cursor.
+
+Some databases do not efficiently support one or the other option, so these
+properties reflect that. Any properties should not be presented when
+paginating unless they are guaranteed. You may not return an approximate total
+when a proper cursor is available, for example.
+
+You may not infer any meaning from a cursor if given. It may appear to have
+encoded data, or meaning, but it should be considered as a token with no value
+on its own.
+
+### Error Handling
+
+Error responses should include a message for the developer, an optional
+internal (diagnostic) error code, and documentation links (if applicable)
+where developers can find more info. For example:
+
+```json
+{
+    "_status": {
+        "code": 400,
+        "ref" : "a1b2c3",
+        "errors": [
+            {
+                "severity": "error",
+                "message": "The attribute `foo` is required."
+            },
+            {
+                "severity": "warning",
+                "message": "A timezone was not specified for `event`; assuming UTC."
+            }
+        ],
+        "docs": [
+            "http://docs.leadpages.io/errors/400",
+            "http://docs.leadpages.io/errors/a1b2c3",
+            "http://docs.leadpages.io/errors/timezones",
+            "http://docs.leadpages.io"
+        ]
+    }
+}
+```
+
+All errors (and status messages) must be contained in a `_status` property and
+include a `code` property. The only response that does not need to include
+`_status` is a `204 No Content` response, as it is defined to not have a
+response body.
+
+The `errors` property must be a list of applicable errors, each specifying a
+severity level and a message. In this way, things like form validation can be
+well-supported when several errors may exist for a given request.
+
+Tend towards the most common response codes when indicating success, failure,
+or status. All of the reason phrases should be as presented in [RFC 2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
+Some of the most common codes and a possible reason include:
+
+- `200 OK` as a general success status
+- `201 Created` when a new resource is created
+- `204 No Content` when a resource is deleted
+- `400 Bad Request` when a required value is missing
+- `403 Forbidden` when not logged in
+- `404 Not Found` when a resource is not found
+- `500 Internal Server Error` when a server failure occurs
+- `503 Service Unavailable` when the service is temporarily overloaded
+
+### CORS
+
+Services are responsible for providing a CORS implementation that is complete
+and will allow natural communication with the API in a browser-based context.
+This means that any request must also return a proper `OPTIONS` response for
+that resource that will allow the request.
+
+## Notes
+
+Some other notes and considerations:
+
+### XML
+
+JSON is the only required response type at this time, and in general, XML
+as a response should be considered only in exceptional cases. Other response
+formats, particularly those that may be exposed as a service-to-service
+interface, are not covered in the scope of this HTTP-centric document.
+
+### JSONP
+
+JSONP is not supported. Use CORS instead. JSONP does not support methods other
+than `GET`, and is generally regarded by the community as being replaced by
+CORS.
 
 ## Contributing
 
@@ -376,6 +545,11 @@ Additionally, this document has been created and improved thanks to the
 following people:
 
 - [bendemaree](https://github.com/bendemaree)
+- [bogdanp](https://github.com/bogdanp)
 - [brechin](https://github.com/brechin)
+- [ctharings](https://github.com/ctharings)
+- [daveisadork](https://github.com/daveisadork)
+- [jselby](https://github.com/jselby)
 - [kristenwomack](https://github.com/kristenwomack)
+- [nwswanson](https://github.com/nwswanson)
 - [rskm1](https://github.com/rskm1)
