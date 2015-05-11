@@ -347,7 +347,8 @@ with an example response.
                 "updated": "2015-04-24T18:35:10.656976+00:00",
             },
             "color": "fuschia",
-            "make": "Spacely"
+            "make": "Spacely",
+            "manufacturedOn": "2015-03-20T12:25:10.446976+00:00"
         }
     ]
 }
@@ -370,6 +371,8 @@ specific resource, as well as some actual data properties
 - A status is included. All responses must include status information as a way
 to display warnings for a successful request. Further information is available
 in the [error handling](#error-handling) section.
+- JSON properties are camelCase, like `manufacturedOn` above. Backends should
+use whatever casing style is best and transform the output to camelCase.
 
 There are also two very general patterns to notice:
 
