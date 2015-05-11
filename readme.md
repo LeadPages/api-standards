@@ -394,10 +394,10 @@ most recent time the resource was updated.
 
 ### URIs
 
-URIs present in the response should be absolute, including host and protocol
-(i.e., HTTPS). This prevents ambiguity if, in some future state, there is a
-need to reference schema, resources, etc. across domains, and also assists in
-making the [HTTPS-only](#ssltls) requirement concrete.
+URIs present in the response should be absolute, including host, protocol, and
+scheme (i.e., HTTPS). This prevents ambiguity if, in some future state, there
+is a need to reference schema, resources, etc. across domains, and also
+assists in making the [HTTPS-only](#ssltls) requirement concrete.
 
 Additionally, resources must be returned with a `_uri` property that
 always returns the canonical version of the resource. Note that there may be
