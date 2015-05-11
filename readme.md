@@ -97,7 +97,7 @@ example base URL is the primary URL structure.
 For clarification, here is the base URL in the context of a full resource
 URL. This is **not** a base URL:
 
-- `https://api.company.com/service/v1/sprockets/a1b2c3`
+- `https://api.company.com/service/v1/sprockets/3rDrZRbdeSJJeR4jQSWAjK`
 
 In some cases, it may make sense to structure the base URL to include the API
 name as a subdomain.
@@ -204,15 +204,15 @@ the resource path as the canonical path for a resource, despite the base URL.
 
 These are the full URLs from the base URL section:
 
-- `https://api.company.com/data/v1/widgets/a1b2c3`
-- `https://product.company.com/api/v1/widgets/a1b2c3`
-- `https://company.com/api/v1/widgets/a1b2c3`
+- `https://api.company.com/data/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `https://product.company.com/api/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `https://company.com/api/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 
 Note that if you strip the base URL from the front, they are now all the same:
 
-- `/widgets/a1b2c3`
-- `/widgets/a1b2c3`
-- `/widgets/a1b2c3`
+- `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 
 What follows are some more specific guidelines around resource paths.
 
@@ -281,12 +281,12 @@ The action taken on the representation will be contextual to the media type
 being worked on and its current state. Here's an example of how HTTP verbs
 can map to different actions depending on context.
 
-| Method          | Endpoint          | Description         |
-| --------------- | ---------------   | ------------------- |
-| `POST`          | `/widgets`        | Create a widget     |
-| `GET`           | `/widgets`        | List widgets        |
-| `POST`          | `/widgets/a1b2c3` | Invalid             |
-| `GET`           | `/widgets/a1b2c3` | Get a single widget |
+| Method          | Endpoint                          | Description         |
+| --------------- | --------------------------------- | ------------------- |
+| `POST`          | `/widgets`                        | Create a widget     |
+| `GET`           | `/widgets`                        | List widgets        |
+| `POST`          | `/widgets/3rDrZRbdeSJJeR4jQSWAjK` | Invalid             |
+| `GET`           | `/widgets/3rDrZRbdeSJJeR4jQSWAjK` | Get a single widget |
 
 ### Headers
 
@@ -330,19 +330,18 @@ with an example response.
 ```json
 {
     "_meta": {
-        "$schema": "https://api.leadpages.io/data/v1/widgets/schema",
-        "_limit": 20,
-        "_total": 30,
-        "_count": 10,
-        "_offset": 20
+        "limit": 20,
+        "total": 30,
+        "count": 10,
+        "offset": 20
     },
     "_items": [
         {
             "_meta" :{
-                "_id": "5cd9b168-ed04-11e4-a659-fd8bf206b734",
-                "_uri": "https://api.leadpages.io/data/v1/widgets/5cd9b168-ed04-11e4-a659-fd8bf206b734",
-                "_created": "2015-04-24T18:35:10.656940+00:00",
-                "_updated": "2015-04-24T18:35:10.656976+00:00",
+                "id": "3rDrZRbdeSJJeR4jQSWAjK",
+                "uri": "https://api.leadpages.io/data/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK",
+                "created": "2015-04-24T18:35:10.656940+00:00",
+                "updated": "2015-04-24T18:35:10.656976+00:00",
             },
             "color": "fuschia",
             "make": "Spacely"
