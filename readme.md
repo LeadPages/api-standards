@@ -353,11 +353,12 @@ with an example response.
 Some things to notice about this response format:
 
 - Several of the fields begin with an `_`. All underscore-prefixed keys are
-reserved and may not be used for data properties. Additionally, they are
-read-only.
+reserved and may not be used for data properties.
 - This is a response from listing widgets. We have two clear ways of inferring
 this:
     - The `_meta` section includes pagination information.
+    - The reserved keys within the `_meta` section do not require an
+    underscore prefix.
     - There is an `_items` key at the root of the response object, that is a
     list of objects.
 - For the widget in the list, there are additional `_meta` properties for that
