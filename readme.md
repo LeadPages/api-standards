@@ -472,7 +472,9 @@ where developers can find more info. For example:
 ```
 
 All errors (and status messages) must be contained in a `_status` property and
-include a `code` property.
+include a `code` property. The only response that does not need to include
+`_status` is a `204 No Content` response, as it is defined to not have a
+response body.
 
 The `errors` property must be a list of applicable errors, each specifying a
 severity level and a message. In this way, things like form validation can be
