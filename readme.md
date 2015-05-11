@@ -202,15 +202,14 @@ Some invalid examples of versions:
 Resources are represented by a path that follows a base URL. You can consider
 the resource path as the canonical path for a resource, despite the base URL.
 
-These are the full URLs from the base URL section:
+This is the full URL from the base URL section, as well as the alternate
+version:
 
-- `https://api.company.com/data/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
-- `https://product.company.com/api/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
-- `https://company.com/api/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `https://api.company.com/service/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
+- `https://service.company.com/api/v1/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 
-Note that if you strip the base URL from the front, they are now all the same:
+Note that if you strip the base URL from the front, they are the same:
 
-- `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 - `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 - `/widgets/3rDrZRbdeSJJeR4jQSWAjK`
 
