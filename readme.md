@@ -329,6 +329,9 @@ with an example response.
 
 ```json
 {
+    "_status": {
+        "code": 200
+    },
     "_meta": {
         "limit": 20,
         "total": 30,
@@ -364,6 +367,9 @@ this:
 - For the widget in the list, there are additional `_meta` properties for that
 specific resource, as well as some actual data properties
 (`color` and `make`).
+- A status is included. All responses must include status information as a way
+to display warnings for a successful request. Further information is available
+in the [error handling](#error-handling) section.
 
 There are also two very general patterns to notice:
 
@@ -439,16 +445,35 @@ where developers can find more info. For example:
 
 ```json
 {
-    "error_code": 400,
-    "error_ref" : "a1b2c3",
-    "message": "The attribute `foo` is required.",
-    "ref": [
-        "http://docs.leadpages.io/errors/400",
-        "http://docs.leadpages.io/errors/a1b2c3",
-        "http://docs.leadpages.io"
-    ]
+    "_status": {
+        "code": 400,
+        "ref" : "a1b2c3",
+        "errors": [
+            {
+                "severity": "error",
+                "message": "The attribute `foo` is required."
+            },
+            {
+                "severity": "warning",
+                "message": "A timezone was not specified for `event`; assuming UTC."
+            }
+        ],
+        "docs": [
+            "http://docs.leadpages.io/errors/400",
+            "http://docs.leadpages.io/errors/a1b2c3",
+            "http://docs.leadpages.io/errors/timezones",
+            "http://docs.leadpages.io"
+        ]
+    }
 }
 ```
+
+All errors (and status messages) must be contained in a `_status` property and
+include a `code` property.
+
+The `errors` property must be a list of applicable errors, each specifying a
+severity level and a message. In this way, things like form validation can be
+well-supported when several errors may exist for a given request.
 
 Tend towards the most common response codes when indicating success, failure,
 or status. All of the reason phrases should be as presented in [RFC 2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html).
