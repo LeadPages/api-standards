@@ -314,12 +314,13 @@ additive process. By extension, even queries that may seem nonsensical (for
 example, specifying a limit as if paginating, on a request for a single
 resource) must not be rejected as invalid input.
 
-There are some query parameters that must be supported by any API service:
+There are some query parameters that should be supported by any API service:
 
 | Parameter | Description                                              |
 | --------- | -------------------------------------------------------- |
 | `limit`   | Maximum number of items to return, if listing resources. |
 | `offset`  | Where in the result set to begin listing resources.      |
+| `cursor`  | Begin at this pointer into the listing response.         |
 
 ## Responses
 
@@ -408,12 +409,27 @@ section.
 
 The pagination parameters are as follows:
 
-| Key       | Description                                                         |
-| --------  | ----------------------------------------------------------------    |
-| `_limit`  | Max number of items that may be returned in this listing.           |
-| `_total`  | Total number of items that matched the listing or query.            |
-| `_count`  | Actual number of items in the listing response.                     |
-| `_offset` | The starting point in the result set that this response represents. |
+| Key      | Description                                                         |
+| -------  | ----------------------------------------------------------------    |
+| `limit`  | Max number of items that may be returned in this listing.           |
+| `total`  | Total number of items that matched the listing or query.            |
+| `offset` | The starting point in the result set that this response represents. |
+| `cursor` | A pointer into the result set that this response represents.        |
+
+When paginating, you may generally expect support for either:
+
+- A limit and offset pair to navigate within the set, and a total count of
+records.
+- A cursor.
+
+Some databases do not efficiently support one or the other option, so these
+properties reflect that. Any properties should not be presented when
+paginating unless they are guaranteed. You may not return an approximate total
+when a proper cursor is available, for example.
+
+You may not infer any meaning from a cursor if given. It may appear to have
+encoded data, or meaning, but it should be considered as a token with no value
+on its own.
 
 ### Error Handling
 
