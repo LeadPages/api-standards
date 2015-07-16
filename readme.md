@@ -253,6 +253,29 @@ general should not accept creation requests. In concrete examples:
   - `GET /sprockets` may return all `sprocket`s, regardless of `widget`
   collection.
 
+This nested endpoint relationship avoids having to submit the parent ID as
+part of the request body. For example, again assuming a `sprocket` as a child
+of a `widget`:
+
+```
+POST /widgets/a1b2c3/sprockets
+{
+    "key": "value",
+    "foo": "bar"
+}
+```
+
+is preferable to:
+
+```
+POST /sprockets
+{
+    "widget": "a1b2c3",
+    "key": "value",
+    "foo": "bar"
+}
+```
+
 ## Requests
 
 There are few stipulations involved with an API request. APIs should aim to be
