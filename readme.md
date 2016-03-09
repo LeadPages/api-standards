@@ -244,7 +244,7 @@ a single `widget` (`a1b2c3`). What this then implicates is that you may not,
 in general, create a `sprocket` at the root `sprocket` endpoint. The root `sprocket`
 endpoint may list all of the current context's `sprocket`s, or similar, but in
 general should not accept creation requests. In concrete examples:
-  - `POST /sprockets` is invalid unless `widget` is specified in the JSON payload.
+  - `POST /sprockets` is invalid unless `widget` is specified in the payload.
   - `POST /widgets/a1b2c3/sprockets` will create a `sprocket` that may be
   returned as a property within `/widgets/a1b2c3`.
   - `GET /widgets/a1b2c3/sprockets` will return all the `sprocket`s that are
